@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Mastery | PyData School</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #181229;
+            --bg-dark: #120d1c;
+            --card-bg: #211937;
+            --accent: #4f8cff;
+            --accent-light: #7da7ff;
+            --primary: #ffb300;
+            --secondary: #36d399;
+            --info: #2196f3;
+            --warning: #ffd54f;
+            --danger: #e57373;
+            --success: #43a047;
+            --text: #f3f6fa;
+            --text-muted: #b0bec5;
+            --border: #333;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+        a { color: var(--accent); text-decoration: none; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background: var(--bg-dark);
+            padding: 1.2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .header-content {
+            display: flex; justify-content: space-between; align-items: center; gap: 2rem;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 12px; font-size: 2rem; font-weight: 700;
+        }
+        .logo .material-icons { color: var(--accent); font-size: 2.4rem; }
+        .instructor {
+            font-size: 1rem; color: var(--accent-light);
+        }
+        nav ul {
+            display: flex; gap: 1.2rem; list-style: none; margin: 0; padding: 0;
+        }
+        nav a {
+            color: var(--text); font-weight: 500; padding: 6px 14px; border-radius: 4px; transition: 0.25s;
+        }
+        nav a:hover { background: var(--accent); color: var(--bg-dark); }
+        .hero {
+            padding: 3.5rem 1rem 2.2rem 1rem;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            color: #fff;
+            text-align: center;
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 2.4rem;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(90deg, #fff 60%, #ffd54f 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { color: #f7f7f7; max-width: 700px; margin: 0 auto 1.6rem; font-size: 1.2rem; }
+        .btn {
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            color: var(--bg-dark);
+            padding: 12px 32px;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.13);
+            transition: transform 0.19s, box-shadow 0.19s;
+        }
+        .btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 24px rgba(79,140,255,0.22);}
+        .instructor-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+        }
+        .instructor-img {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.1rem; color: white;
+        }
+        @media (max-width: 600px) {
+            .instructor-section { flex-direction: column; text-align: center; }
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.3rem;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 70px; height: 4px;
+            background: var(--accent);
+            margin: 12px auto 0 auto;
+            border-radius: 2px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.11);
+            padding: 1.6rem 1.1rem;
+            display: flex; flex-direction: column; align-items: flex-start;
+            border-left: 5px solid var(--accent);
+            transition: 0.22s;
+            width:310px;
+        }
+        .feature-card:hover { transform: scale(1.03); border-left: 7px solid var(--primary);}
+        .feature-card .material-icons { font-size: 2.3rem; margin-bottom: 0.7rem; color: var(--primary);}
+        .feature-card h3 { margin-bottom: 0.6rem; }
+        .feature-card ul { margin: 0 0 0.8rem 0; padding-left: 1.1rem;}
+        .feature-card li { color: var(--text-muted); margin-bottom: 0.23rem;}
+        /* Tabs */
+        .tabs { display: flex; background: var(--bg-dark); border-radius: 7px 7px 0 0; overflow: hidden;}
+        .tab {
+            flex: 1 0 20%;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: background 0.24s, border 0.22s;
+        }
+        .tab.active {
+            background: var(--bg-dark);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        .tab-content { display: none; padding: 1.5rem; background: var(--bg-dark); border-radius: 0 0 7px 7px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);}
+        .tab-content.active { display: block; }
+        .example, .notes { margin: 1.1rem 0; border-radius: 6px; }
+        .example {
+            background: rgba(79,140,255,0.09);
+            border-left: 5px solid var(--accent);
+            padding: 1.2rem;
+        }
+        .example h4, .notes h4 { display: flex; align-items: center; gap: 9px; color: var(--primary); margin-bottom: 0.5rem;}
+        .notes {
+            background: rgba(255,179,0,0.09);
+            border-left: 5px solid var(--primary);
+            padding: 1.1rem;
+        }
+        pre {
+            background: #232a31;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: scroll;
+            margin: 0.7rem 0;
+            border: 1px solid var(--border);
+            width:-webkit-fill-available;
+        }
+        code { color: #7da7ff; font-size: 1.07em;}
+        /* Playground */
+        .playground {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.11);
+            margin: 3rem 0;
+            border: 1px solid var(--border);
+        }
+        .playground-header {
+            background: var(--bg-dark);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .playground-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.1rem;
+            padding: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .playground-body { grid-template-columns: 1fr;}
+        }
+        .code-editor, .result-area {
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 1rem;
+            background: var(--bg-dark);
+            min-height: 180px; width: 100%;
+            color: var(--text);
+        }
+        .code-editor { font-family: 'Fira Mono', 'Courier New', monospace; resize: vertical;}
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            font-size: 1rem;
+        }
+        @media (max-width: 700px) {
+            .header-content { flex-direction: column; gap: 1rem;}
+            .card-grid { grid-template-columns: 1fr;}
+            .tabs { flex-wrap: wrap;}
+            .tab { flex: 1 0 33%;}
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container header-content">
+        <div>
+            <div class="logo">
+                <span class="material-icons"></span>
+                <span>DeviX Solutions</span>
+            </div>
+            <div class="instructor">by Ram Sir</div>
+       
+</header>
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1>
+            <span class="material-icons">sql</span>
+            SQL Mastery Course
+        </h1>
+        <p>
+            Comprehensive SQL: Learn from basics to expert level—core concepts, advanced queries, optimization, security, and real-world case studies with hands-on examples and theory, by Ram Sir.
+        </p>
+        <a href="#course-content" class="btn">Start Learning SQL</a>
+    </div>
+</section>
+<!-- Instructor Section -->
+<section class="container instructor-section">
+    <div class="instructor-img">
+        <span class="material-icons">DeviX</span>
+    </div>
+    <div>
+        <h2>About Your Instructor</h2>
+        <p>
+            Ram Sir, expert database architect, brings 2+ years of SQL and DBMS experience, training thousands in industry and academia.
+        </p>
+    </div>
+</section>
+<!-- Course Content Overview -->
+<section class="container" id="course-content">
+    <h2 class="section-title">SQL Learning Path</h2>
+    <div class="card-grid">
+        <div class="feature-card">
+            <span class="material-icons">dataset</span>
+            <h3>Core SQL</h3>
+            <ul>
+                <li>Data types & schemas</li>
+                <li>Tables & constraints</li>
+                <li>CRUD operations</li>
+            </ul>
+            <button class="btn" onclick="showTab('core-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">psychology</span>
+            <h3>Advanced SQL</h3>
+            <ul>
+                <li>Joins & subqueries</li>
+                <li>Views, Indexes</li>
+                <li>Transactions</li>
+            </ul>
+            <button class="btn" onclick="showTab('advanced-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">engineering</span>
+            <h3>Expert/Pro Topics</h3>
+            <ul>
+                <li>Performance tuning</li>
+                <li>Stored procedures</li>
+                <li>Triggers, CTE, Window</li>
+            </ul>
+            <button class="btn" onclick="showTab('expert-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">security</span>
+            <h3>Security & Admin</h3>
+            <ul>
+                <li>Users & roles</li>
+                <li>Privileges</li>
+                <li>Backup/restore</li>
+            </ul>
+            <button class="btn" onclick="showTab('security-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">case_study</span>
+            <h3>Case Studies</h3>
+            <ul>
+                <li>Real-world queries</li>
+                <li>Optimization</li>
+                <li>Analytics</li>
+            </ul>
+            <button class="btn" onclick="showTab('cases-tab')">Learn More</button>
+        </div>
+    </div>
+</section>
+<!-- Tabs Section -->
+<section class="container tab-container">
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('core-tab')">Core</div>
+        <div class="tab" onclick="showTab('advanced-tab')">Advanced</div>
+        <div class="tab" onclick="showTab('expert-tab')">Expert</div>
+        <div class="tab" onclick="showTab('security-tab')">Security</div>
+        <div class="tab" onclick="showTab('cases-tab')">Case Studies</div>
+    </div>
+    <!-- Core SQL Tab -->
+    <div id="core-tab" class="tab-content active">
+        <h2><span class="material-icons">dataset</span> Core SQL</h2>
+        <p>
+            Start with the foundations of SQL: tables, data types, constraints, and basic data manipulation.
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Table Creation & Types</h4>
+            <pre><code>CREATE TABLE Employees (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    Age INT,
+    Department VARCHAR(50),
+    HireDate DATE,
+    Salary DECIMAL(9,2)
+);</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> CRUD Operations</h4>
+            <pre><code>-- Insert
+INSERT INTO Employees (EmpID, Name, Age, Department, Salary) VALUES (1, 'John', 30, 'IT', 70000);
+
+-- Select
+SELECT Name, Salary FROM Employees WHERE Department = 'IT';
+
+-- Update
+UPDATE Employees SET Salary = Salary + 5000 WHERE EmpID = 1;
+
+-- Delete
+DELETE FROM Employees WHERE EmpID = 1;</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Constraints</h4>
+            <pre><code>-- Add UNIQUE and CHECK
+ALTER TABLE Employees ADD CONSTRAINT unique_email UNIQUE (Email);
+ALTER TABLE Employees ADD CONSTRAINT check_age CHECK (Age >= 18);</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Key Notes</h4>
+            <p>
+                SQL is a declarative language: you specify <i>what</i> you want, not <i>how</i>.
+                Tables are the core, but constraints (PK, FK, UNIQUE, CHECK, DEFAULT, NOT NULL) are critical for data integrity.
+            </p>
+        </div>
+    </div>
+    <!-- Advanced SQL Tab -->
+    <div id="advanced-tab" class="tab-content">
+        <h2><span class="material-icons">psychology</span> Advanced SQL</h2>
+        <p>
+            Go deeper with joins, subqueries, views, indexes, and transactions.
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Joins</h4>
+            <pre><code>-- INNER JOIN
+SELECT e.Name, d.DeptName
+FROM Employees e
+INNER JOIN Departments d ON e.Department = d.DeptID;
+
+-- LEFT JOIN
+SELECT e.Name, d.DeptName
+FROM Employees e
+LEFT JOIN Departments d ON e.Department = d.DeptID;
+
+-- CROSS JOIN
+SELECT * FROM Products CROSS JOIN Suppliers;</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Subqueries</h4>
+            <pre><code>-- Subquery in WHERE
+SELECT Name FROM Employees WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+
+-- Correlated Subquery
+SELECT e.Name FROM Employees e
+WHERE Salary > (SELECT AVG(Salary) FROM Employees WHERE Department = e.Department);</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Views & Indexes</h4>
+            <pre><code>-- View
+CREATE VIEW HighEarners AS
+SELECT Name, Salary FROM Employees WHERE Salary > 80000;
+
+-- Index
+CREATE INDEX idx_dept_salary ON Employees(Department, Salary);</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Transactions</h4>
+            <pre><code>BEGIN TRANSACTION;
+UPDATE Accounts SET Balance = Balance - 200 WHERE AccountID = 1;
+UPDATE Accounts SET Balance = Balance + 200 WHERE AccountID = 2;
+COMMIT;</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Good to Know</h4>
+            <p>
+                Views = reusable queries; Indexes = performance boost; Transactions = atomicity, consistency, isolation, durability (ACID).
+            </p>
+        </div>
+    </div>
+    <!-- Expert SQL Tab -->
+    <div id="expert-tab" class="tab-content">
+        <h2><span class="material-icons">engineering</span> Expert/Pro SQL Topics</h2>
+        <p>
+            Unlock the power of SQL with advanced programming, analytics, optimization, and database design.
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Stored Procedures & Functions</h4>
+            <pre><code>-- Procedure (MySQL style)
+DELIMITER //
+CREATE PROCEDURE GiveRaise(IN emp INT, IN amount DECIMAL(9,2))
+BEGIN
+    UPDATE Employees SET Salary = Salary + amount WHERE EmpID = emp;
+END //
+DELIMITER ;
+
+CALL GiveRaise(2, 10000);</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Triggers</h4>
+            <pre><code>CREATE TRIGGER audit_salary
+AFTER UPDATE ON Employees
+FOR EACH ROW
+INSERT INTO SalaryAudit(EmpID, OldSalary, NewSalary, ChangeDate)
+VALUES (OLD.EmpID, OLD.Salary, NEW.Salary, NOW());</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> CTEs & Window Functions</h4>
+            <pre><code>-- CTE (WITH)
+WITH DeptAvg AS (
+  SELECT Department, AVG(Salary) AS DeptAvgSalary
+  FROM Employees
+  GROUP BY Department
+)
+SELECT e.Name, e.Department, e.Salary, d.DeptAvgSalary
+FROM Employees e
+JOIN DeptAvg d ON e.Department = d.Department;
+
+-- Window Function (RANK)
+SELECT Name, Salary, RANK() OVER (ORDER BY Salary DESC) AS SalaryRank
+FROM Employees;</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Query Optimization</h4>
+            <pre><code>EXPLAIN SELECT * FROM Employees WHERE Department = 'Finance';
+
+-- Optimize with index:
+CREATE INDEX idx_dept ON Employees(Department);</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Expert Notes</h4>
+            <p>
+                Use CTEs for complex queries; window functions for analytics; triggers for automation; study execution plans for speed.
+            </p>
+        </div>
+    </div>
+    <!-- Security/Admin Tab -->
+    <div id="security-tab" class="tab-content">
+        <h2><span class="material-icons">security</span> Security & Administration</h2>
+        <p>
+            Keep your database safe with user management, privileges, backup/restore, and auditing.
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> User & Role Management</h4>
+            <pre><code>CREATE USER analyst IDENTIFIED BY 'pass123';
+GRANT SELECT, INSERT ON Employees TO analyst;
+REVOKE INSERT ON Employees FROM analyst;
+DROP USER analyst;</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Backups & Restore</h4>
+            <pre><code>-- MySQL dump
+mysqldump -u root -p mydb > backup.sql
+
+-- Restore
+mysql -u root -p mydb < backup.sql</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Auditing Access</h4>
+            <pre><code>-- Enable audit log (MySQL example)
+INSTALL PLUGIN audit_log SONAME 'audit_log.so';
+SHOW VARIABLES LIKE 'audit%';</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Security Best Practices</h4>
+            <p>
+                Always use least privilege, strong passwords, regular backups, and audit logs for compliance.
+            </p>
+        </div>
+    </div>
+    <!-- Case Studies Tab -->
+    <div id="cases-tab" class="tab-content">
+        <h2><span class="material-icons">case_study</span> Real-World Case Studies</h2>
+        <p>
+            Practice advanced SQL with real-world scenarios, reporting, and analytics.
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Reporting: Top Earners by Department</h4>
+            <pre><code>SELECT Department, Name, Salary
+FROM (
+  SELECT e.*, RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS rnk
+  FROM Employees e
+) ranked
+WHERE rnk = 1;</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Analytics: Year-over-Year Growth</h4>
+            <pre><code>SELECT Year, SUM(Sales) AS TotalSales,
+  LAG(SUM(Sales)) OVER (ORDER BY Year) AS PrevYearSales,
+  ((SUM(Sales) - LAG(SUM(Sales)) OVER (ORDER BY Year))/LAG(SUM(Sales)) OVER (ORDER BY Year))*100 AS YoYGrowth
+FROM Sales
+GROUP BY Year;</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Data Cleaning: Remove Duplicates</h4>
+            <pre><code>DELETE FROM Employees
+WHERE EmpID NOT IN (
+  SELECT MIN(EmpID) FROM Employees GROUP BY Email
+);</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Cross-Database Query</h4>
+            <pre><code>SELECT a.Name, b.Sales
+FROM HR.Employees a
+JOIN Sales.Records b ON a.EmpID = b.EmpID;</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Learn by Doing</h4>
+            <p>
+                Real SQL skills come from practice—try to solve these and tweak them for your data!
+            </p>
+        </div>
+    </div>
+</section>
+<!-- Playground -->
+<section class="container">
+    <h2 class="section-title">SQL Playground</h2>
+    <div class="playground">
+        <div class="playground-header">
+            <h3>Try SQL Queries</h3>
+            <button class="btn" onclick="runSQL()">Run Query <span class='material-icons'>play_arrow</span></button>
+        </div>
+        <div class="playground-body">
+            <textarea class="code-editor" id="sql-query" placeholder="Write SQL query here...">SELECT * FROM Employees;</textarea>
+            <div class="result-area" id="sql-result">
+                <p>Results will appear here...</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Function Reference -->
+<section class="container">
+    <h2 class="section-title">SQL Command Reference</h2>
+    <p style="text-align:center; max-width:700px; margin:0 auto 2rem; color:var(--text-muted);">
+        Most-used SQL statements and features, with query examples.
+    </p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:2rem;">
+        <div class="feature-card">
+            <span class="material-icons">add_box</span>
+            <h3>DDL: Structure</h3>
+            <ul>
+                <li><b>CREATE TABLE</b>, <b>ALTER TABLE</b>, <b>DROP</b></li>
+                <li><b>CONSTRAINTS</b>: PK, FK, UNIQUE, CHECK</li>
+            </ul>
+<pre><code>CREATE TABLE Products (...);
+ALTER TABLE Products ADD COLUMN Price DECIMAL(5,2);</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">edit</span>
+            <h3>DML: Data Manipulation</h3>
+            <ul>
+                <li><b>INSERT</b>, <b>UPDATE</b>, <b>DELETE</b></li>
+                <li><b>MERGE</b></li>
+            </ul>
+<pre><code>INSERT INTO t (a,b) VALUES (1,2);
+UPDATE t SET a=2 WHERE b=2;</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">search</span>
+            <h3>DQL: Query</h3>
+            <ul>
+                <li><b>SELECT</b>, <b>WHERE</b>, <b>GROUP BY</b></li>
+                <li><b>HAVING</b>, <b>ORDER BY</b>, <b>JOIN</b></li>
+            </ul>
+<pre><code>SELECT col FROM t WHERE a=1 ORDER BY b;</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">function</span>
+            <h3>Functions & Expression</h3>
+            <ul>
+                <li><b>COUNT</b>, <b>SUM</b>, <b>AVG</b></li>
+                <li><b>CASE</b>, <b>COALESCE</b>, <b>CAST</b></li>
+            </ul>
+<pre><code>SELECT COUNT(*), SUM(amount), AVG(salary) FROM t;</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">group_work</span>
+            <h3>Joins & Subqueries</h3>
+            <ul>
+                <li><b>INNER/LEFT/RIGHT/FULL JOIN</b></li>
+                <li><b>Subqueries</b>, <b>IN</b>, <b>EXISTS</b></li>
+            </ul>
+<pre><code>SELECT * FROM a INNER JOIN b ON a.id = b.id;</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">psychology</span>
+            <h3>Window & CTE</h3>
+            <ul>
+                <li><b>RANK()</b>, <b>DENSE_RANK()</b>, <b>ROW_NUMBER()</b></li>
+                <li><b>WITH</b> (CTE)</li>
+            </ul>
+<pre><code>SELECT name, RANK() OVER (ORDER BY salary) FROM t;</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">security</span>
+            <h3>Privileges & Security</h3>
+            <ul>
+                <li><b>GRANT</b>, <b>REVOKE</b></li>
+                <li><b>CREATE USER</b>, <b>DROP USER</b></li>
+            </ul>
+<pre><code>GRANT SELECT ON db.table TO user;</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">backup</span>
+            <h3>Admin & Backup</h3>
+            <ul>
+                <li><b>mysqldump</b>, <b>pg_dump</b></li>
+                <li>SHOW TABLES, DESCRIBE</li>
+            </ul>
+<pre><code>mysqldump -u root -p db > backup.sql;</code></pre>
+        </div>
+    </div>
+</section>
+<footer>
+    <div class="container">
+        <p>&copy; 2025 PyData School. All rights reserved.</p>
+        <p>SQL Mastery Course by Ram Sir</p>
+    </div>
+</footer>
+<script>
+    // Tab switching
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        let tabNames = ['core-tab','advanced-tab','expert-tab','security-tab','cases-tab'];
+        let idx = tabNames.indexOf(tabId);
+        if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+    }
+    // Playground simulation (demo only)
+    function runSQL() {
+        const code = document.getElementById('sql-query').value.trim().toLowerCase();
+        const resultArea = document.getElementById('sql-result');
+        if (code.includes("select") && code.includes("employees")) {
+            resultArea.innerHTML = `<table style="width:100%;color:var(--text);border-collapse:collapse;"><thead><tr><th>EmpID</th><th>Name</th><th>Department</th><th>Salary</th></tr></thead><tbody><tr><td>1</td><td>John</td><td>IT</td><td>70000</td></tr><tr><td>2</td><td>Jane</td><td>HR</td><td>65000</td></tr></tbody></table>`;
+        } else if (code.startsWith("insert")) {
+            resultArea.innerHTML = `<pre>1 row inserted.</pre>`;
+        } else if (code.startsWith("update")) {
+            resultArea.innerHTML = `<pre>1 row updated.</pre>`;
+        } else if (code.startsWith("delete")) {
+            resultArea.innerHTML = `<pre>1 row deleted.</pre>`;
+        } else if (code.includes("join")) {
+            resultArea.innerHTML = `<table style="width:100%;color:var(--text);border-collapse:collapse;"><thead><tr><th>Name</th><th>DeptName</th></tr></thead><tbody><tr><td>John</td><td>IT</td></tr><tr><td>Jane</td><td>HR</td></tr></tbody></table>`;
+        } else if (code.includes("create table")) {
+            resultArea.innerHTML = `<pre>Table created successfully.</pre>`;
+        } else if (code.includes("drop")) {
+            resultArea.innerHTML = `<pre>Table dropped.</pre>`;
+        } else if (code.includes("alter")) {
+            resultArea.innerHTML = `<pre>Table altered.</pre>`;
+        } else if (code.includes("grant")) {
+            resultArea.innerHTML = `<pre>Privileges granted.</pre>`;
+        } else if (code.includes("backup")) {
+            resultArea.innerHTML = `<pre>Backup completed.</pre>`;
+        } else {
+            resultArea.innerHTML = `<pre>No output (simulator only).</pre>`;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() { runSQL(); });
+</script>
+</body>
+</html>
